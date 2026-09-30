@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import type { PriceHistory } from "@/lib/history";
+import { lookupHistory } from "@/lib/lookup";
+import { NATIVE } from "@/lib/native";
 
 export type HistoryState =
   | { status: "idle" }
@@ -18,12 +20,18 @@ export function useHistory(symbol: string | null): HistoryState {
   useEffect(() => {
     if (!symbol) return;
     let cancelled = false;
-    fetch(`/api/history?symbol=${encodeURIComponent(symbol)}`)
-      .then(async (response) => {
-        const body = await response.json();
+    // The iOS app has no server behind it, so it looks the symbol up itself.
+    const lookup = NATIVE
+      ? lookupHistory(symbol).then(({ status, body }) => ({ ok: status === 200, body }))
+      : fetch(`/api/history?symbol=${encodeURIComponent(symbol)}`).then(async (response) => ({
+          ok: response.ok,
+          body: await response.json(),
+        }));
+    lookup
+      .then(({ ok, body }) => {
         if (cancelled) return;
         setLoaded(
-          response.ok
+          ok
             ? { symbol, history: body as PriceHistory }
             : { symbol, message: body.error ?? "Something went wrong." },
         );

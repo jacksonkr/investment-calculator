@@ -13,6 +13,7 @@ import { NumberField } from "@/components/NumberField";
 import { Card, Segmented } from "@/components/ui";
 import { useHistory } from "@/components/useHistory";
 import { INDEXES, formatMonth, historicalStats } from "@/lib/history";
+import { NATIVE } from "@/lib/native";
 import { DEFAULT_INPUTS, type Inputs } from "@/lib/simulate";
 
 type Mode = "custom" | "index" | "ticker";
@@ -434,28 +435,29 @@ function Workspace({ start }: { start: Scenario }) {
           >
             Reset
           </button>
-          <button
-            type="button"
-            className="flex-1 rounded-md border border-hairline px-3 py-1.5 text-xs text-ink-2 hover:text-ink"
-            onClick={async () => {
-              const url = `${window.location.origin}${window.location.pathname}${writeHash(scenario)}`;
-              try {
-                await navigator.clipboard.writeText(url);
-                setCopied(true);
-                setTimeout(() => setCopied(false), 2000);
-              } catch {
-                window.history.replaceState(null, "", url);
-              }
-            }}
-          >
-            {copied ? "Link copied" : "Copy link to this scenario"}
-          </button>
+          {/* Inside the iOS app the page has no address anyone else could open. */}
+          {!NATIVE && (
+            <button
+              type="button"
+              className="flex-1 rounded-md border border-hairline px-3 py-1.5 text-xs text-ink-2 hover:text-ink"
+              onClick={async () => {
+                const url = `${window.location.origin}${window.location.pathname}${writeHash(scenario)}`;
+                try {
+                  await navigator.clipboard.writeText(url);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 2000);
+                } catch {
+                  window.history.replaceState(null, "", url);
+                }
+              }}
+            >
+              {copied ? "Link copied" : "Copy link to this scenario"}
+            </button>
+          )}
         </div>
       </form>
 
-      {/* On small screens the results join the page's own grid, so the chart
-          can be lifted above the inputs. */}
-      <div className="min-w-0 max-lg:contents lg:space-y-6">
+      <div className="min-w-0 space-y-6">
         {mode === "custom" && (
           <FutureResults
             inputs={futureInputs}

@@ -153,7 +153,7 @@ export function FutureResults({ inputs, real, onRealChange, basis }: Props) {
         )}
       </div>
 
-      <Card className="max-lg:order-first">
+      <Card>
         <h2 className="text-base font-semibold text-ink">If growth were perfectly steady</h2>
         <p className="mt-1 text-sm text-ink-2">
           The gap between the two lines is money the market made for you. It widens over time

@@ -67,7 +67,7 @@ export function HistoryResults({ history, inputs }: { history: PriceHistory; inp
         />
       </div>
 
-      <Card className="max-lg:order-first">
+      <Card>
         <h2 className="text-base font-semibold text-ink">What actually happened</h2>
         <p className="mt-1 text-sm text-ink-2">
           Your plan replayed against the real month-by-month prices of {history.name}. Unlike a
