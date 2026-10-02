@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
+import { tick } from "@/lib/haptics";
 
 type Props = {
   label: string;
@@ -74,7 +75,10 @@ export function NumberField({
         min={min}
         max={sliderMax}
         step={step}
-        onChange={(e) => onChange(Number(e.target.value))}
+        onChange={(e) => {
+          tick();
+          onChange(Number(e.target.value));
+        }}
       />
       {hint && <p className="mt-0.5 text-xs text-ink-2">{hint}</p>}
     </div>

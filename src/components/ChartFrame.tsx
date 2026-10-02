@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { formatCompact } from "@/lib/format";
 
 export type TooltipRow = {
@@ -41,6 +41,16 @@ type Props = {
   endLabels: EndLabel[];
   children: (scales: Scales) => ReactNode;
 };
+
+// Whether the main pointer can hover (a mouse or trackpad, not a finger).
+const HOVER = "(hover: hover)";
+const subscribeToHover = (onChange: () => void) => {
+  const query = window.matchMedia(HOVER);
+  query.addEventListener("change", onChange);
+  return () => query.removeEventListener("change", onChange);
+};
+const getCanHover = () => window.matchMedia(HOVER).matches;
+const getServerCanHover = () => true;
 
 const MARGIN = { top: 16, right: 68, bottom: 28, left: 52 };
 
@@ -97,6 +107,7 @@ export function ChartFrame({
   children,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const canHover = useSyncExternalStore(subscribeToHover, getCanHover, getServerCanHover);
   const [width, setWidth] = useState(640);
   const [measured, setMeasured] = useState(false);
   const [active, setActive] = useState<number | null>(null);
@@ -396,7 +407,7 @@ export function ChartFrame({
 
       {!stats && (
         <p className="mt-2 text-xs text-ink-2">
-          {panelBelow
+          {!canHover
             ? "Touch the chart to see a point in time, or drag across it to select a period."
             : "Hover to see a point in time, or drag across the chart to select a period."}
         </p>

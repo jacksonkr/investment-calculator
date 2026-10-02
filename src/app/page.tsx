@@ -21,7 +21,7 @@ export default function Home() {
           hypothetical, based on the assumptions you enter, and does not predict or guarantee any
           real result. Past performance does not predict future results. Real investments can
           lose value. Taxes are not included. Price history comes from Yahoo Finance and may be
-          delayed or incomplete. Your amounts stay in your browser; only the index or ticker
+          delayed or incomplete. Your amounts stay on your device; only the index or ticker
           symbol you look up is sent, to fetch its price history.
         </p>
       </footer>

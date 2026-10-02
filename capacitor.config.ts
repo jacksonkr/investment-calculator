@@ -6,8 +6,8 @@ const config: CapacitorConfig = {
   webDir: "out",
   ios: {
     scheme: "Invest Calc",
-    // Keeps the page clear of the status bar and home indicator.
-    contentInset: "automatic",
+    // The page draws edge to edge and pads itself for the safe areas.
+    contentInset: "never",
   },
   plugins: {
     // Routes fetch() through native networking, so the app can read Yahoo's

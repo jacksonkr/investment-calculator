@@ -12,8 +12,11 @@ import { HistoryResults } from "@/components/HistoryResults";
 import { NumberField } from "@/components/NumberField";
 import { Card, Segmented } from "@/components/ui";
 import { useHistory } from "@/components/useHistory";
+import { formatCompact } from "@/lib/format";
 import { INDEXES, formatMonth, historicalStats } from "@/lib/history";
+import { tap } from "@/lib/haptics";
 import { NATIVE } from "@/lib/native";
+import { loadSaved, storeSaved, type SavedScenario } from "@/lib/saved";
 import { DEFAULT_INPUTS, type Inputs } from "@/lib/simulate";
 
 type Mode = "custom" | "index" | "ticker";
@@ -116,6 +119,21 @@ function writeHash(scenario: Scenario) {
   return `#${params.toString()}`;
 }
 
+/** A short, recognizable name for a saved scenario. */
+function scenarioName(scenario: Scenario) {
+  const { inputs, mode } = scenario;
+  const what =
+    mode === "index"
+      ? (INDEXES.find((index) => index.symbol === scenario.indexSymbol)?.name ?? scenario.indexSymbol)
+      : mode === "ticker" && scenario.ticker
+        ? scenario.ticker
+        : `${inputs.returnPct}% a year`;
+  const direction = mode === "custom" ? "" : scenario.view === "history" ? ", past" : ", future";
+  return `${what}${direction} · ${formatCompact(inputs.initial)} + ${formatCompact(inputs.monthly)}/mo · ${inputs.years} yrs`;
+}
+
+const MAX_SAVED = 20;
+
 // The hash the page was opened with. Read once so our own later updates to
 // the URL don't reset the calculator.
 let openingHash: string | undefined;
@@ -135,6 +153,8 @@ function Workspace({ start }: { start: Scenario }) {
   const [scenario, setScenario] = useState(start);
   const [draft, setDraft] = useState(start.ticker ?? "");
   const [copied, setCopied] = useState(false);
+  const [saved, setSaved] = useState<SavedScenario[]>([]);
+  const [justSaved, setJustSaved] = useState(false);
   const { inputs, real, mode, view } = scenario;
 
   useEffect(() => {
@@ -145,6 +165,29 @@ function Workspace({ start }: { start: Scenario }) {
     }, 400);
     return () => clearTimeout(timer);
   }, [scenario, start]);
+
+  useEffect(() => {
+    let live = true;
+    loadSaved().then((list) => {
+      if (live) setSaved(list);
+    });
+    return () => {
+      live = false;
+    };
+  }, []);
+
+  const keepSaved = (list: SavedScenario[]) => {
+    setSaved(list);
+    void storeSaved(list);
+  };
+
+  const load = (item: SavedScenario) => {
+    const restored = readHash(item.hash);
+    if (!restored) return;
+    tap();
+    setScenario(restored);
+    setDraft(restored.ticker ?? "");
+  };
 
   const update = (changes: Partial<Scenario>) =>
     setScenario((current) => ({ ...current, ...changes }));
@@ -255,6 +298,7 @@ function Workspace({ start }: { start: Scenario }) {
                       type="button"
                       aria-pressed={preset === activePreset}
                       onClick={() => {
+                        tap();
                         set("returnPct")(preset.returnPct);
                         set("volatilityPct")(preset.volatilityPct);
                       }}
@@ -302,7 +346,10 @@ function Workspace({ start }: { start: Scenario }) {
                   key={index.symbol}
                   type="button"
                   aria-pressed={index.symbol === scenario.indexSymbol}
-                  onClick={() => update({ indexSymbol: index.symbol })}
+                  onClick={() => {
+                    tap();
+                    update({ indexSymbol: index.symbol });
+                  }}
                   className={`rounded-full border px-2.5 py-1 text-xs transition-colors ${
                     index.symbol === scenario.indexSymbol
                       ? "border-growth bg-growth text-white"
@@ -350,7 +397,10 @@ function Workspace({ start }: { start: Scenario }) {
                 <input
                   type="checkbox"
                   checked={view === "history"}
-                  onChange={(e) => update({ view: e.target.checked ? "history" : "future" })}
+                  onChange={(e) => {
+                    tap();
+                    update({ view: e.target.checked ? "history" : "future" });
+                  }}
                   className="h-4 w-4 accent-(--series-growth)"
                 />
                 Historical
@@ -424,16 +474,33 @@ function Workspace({ start }: { start: Scenario }) {
           </div>
         </details>
 
-        <div className="flex gap-2 border-t border-hairline pt-4">
+        <div className="flex flex-wrap gap-2 border-t border-hairline pt-4">
           <button
             type="button"
             className="flex-1 rounded-md border border-hairline px-3 py-1.5 text-xs text-ink-2 hover:text-ink"
             onClick={() => {
+              tap();
               setScenario(DEFAULT_SCENARIO);
               setDraft("");
             }}
           >
             Reset
+          </button>
+          <button
+            type="button"
+            className="flex-1 rounded-md border border-hairline px-3 py-1.5 text-xs text-ink-2 hover:text-ink"
+            onClick={() => {
+              tap();
+              const hash = writeHash(scenario);
+              if (!saved.some((item) => item.hash === hash)) {
+                const item = { id: String(Date.now()), name: scenarioName(scenario), hash };
+                keepSaved([item, ...saved].slice(0, MAX_SAVED));
+              }
+              setJustSaved(true);
+              setTimeout(() => setJustSaved(false), 2000);
+            }}
+          >
+            {justSaved ? "Saved" : "Save scenario"}
           </button>
           {/* Inside the iOS app the page has no address anyone else could open. */}
           {!NATIVE && (
@@ -455,6 +522,36 @@ function Workspace({ start }: { start: Scenario }) {
             </button>
           )}
         </div>
+
+        {saved.length > 0 && (
+          <div className="border-t border-hairline pt-4">
+            <h3 className="text-sm font-semibold text-ink">Saved scenarios</h3>
+            <ul className="mt-2 space-y-1.5">
+              {saved.map((item) => (
+                <li key={item.id} className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => load(item)}
+                    className="min-w-0 flex-1 truncate rounded-md border border-hairline px-2.5 py-1.5 text-left text-xs text-ink hover:border-growth"
+                  >
+                    {item.name}
+                  </button>
+                  <button
+                    type="button"
+                    aria-label={`Delete ${item.name}`}
+                    onClick={() => {
+                      tap();
+                      keepSaved(saved.filter((other) => other.id !== item.id));
+                    }}
+                    className="rounded-md px-2 py-1.5 text-xs text-ink-2 hover:text-ink"
+                  >
+                    ✕
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </form>
 
       <div className="min-w-0 space-y-6">

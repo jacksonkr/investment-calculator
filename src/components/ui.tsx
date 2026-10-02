@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { tap } from "@/lib/haptics";
 
 export const GROWTH = "var(--series-growth)";
 export const CONTRIB = "var(--series-contrib)";
@@ -77,7 +78,10 @@ export function Segmented<T extends string>({
           key={option.value}
           type="button"
           aria-pressed={option.value === value}
-          onClick={() => onChange(option.value)}
+          onClick={() => {
+            if (option.value !== value) tap();
+            onChange(option.value);
+          }}
           className={`flex-1 rounded-md px-2.5 py-1.5 text-xs transition-colors ${
             option.value === value
               ? "bg-surface font-medium text-ink shadow-sm ring-1 ring-hairline"

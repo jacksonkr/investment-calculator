@@ -11,7 +11,11 @@
   },
   "dependencies": {
     "@capacitor/core": "^7.6.9",
+    "@capacitor/filesystem": "^7.1.8",
+    "@capacitor/haptics": "^7.0.5",
     "@capacitor/ios": "^7.6.9",
+    "@capacitor/preferences": "^7.0.4",
+    "@capacitor/share": "^7.0.4",
     "next": "16.3.7",
     "react": "19.2.8",
     "react-dom": "19.2.8"

@@ -2,8 +2,11 @@
 
 import { useMemo, useState } from "react";
 import { ChartFrame, bandPath, linePath } from "@/components/ChartFrame";
+import { ShareReport } from "@/components/ShareReport";
 import { CONTRIB, GROWTH, Card, Insights, Legend, StatTile } from "@/components/ui";
 import { formatChange, formatCompact, formatMoney, formatPercent } from "@/lib/format";
+import { tap } from "@/lib/haptics";
+import { describePlan, type Report } from "@/lib/report";
 import { deflator, project, simulate, type Inputs } from "@/lib/simulate";
 
 const YEAR_TICKS = [1, 2, 5, 10, 20];
@@ -69,6 +72,33 @@ export function FutureResults({ inputs, real, onRealChange, basis }: Props) {
   const doublingYears = netReturn > 0 ? Math.log(2) / Math.log(1 + netReturn) : null;
   const dollars = real ? "in today's dollars" : "in future dollars";
 
+  const report = (): Report => ({
+    subject: basis ? `${basis.name} · looking ahead` : `Steady ${inputs.returnPct}% a year`,
+    lead: `After ${years} year${years === 1 ? "" : "s"} of steady ${inputs.returnPct}% growth, I could have`,
+    headline: formatMoney(final.balance),
+    caption: `${dollars}, from ${formatMoney(final.contributed)} put in.`,
+    chart: {
+      labels: points.map((p) => (p.year === 0 ? "Today" : String(THIS_YEAR + p.year))),
+      lines: [
+        { values: points.map((p) => p.balance), color: "growth", label: "Steady growth" },
+        { values: points.map((p) => p.contributed), color: "contrib", label: "What I put in" },
+      ],
+      band: {
+        low: outcomes.map((o) => o.p10),
+        high: outcomes.map((o) => o.p90),
+        label: "8 in 10 simulated futures",
+      },
+    },
+    stats: [
+      { label: "What I put in", value: formatCompact(final.contributed) },
+      { label: "Growth", value: formatCompact(growth) },
+      { label: `Middle of ${paths.toLocaleString("en-US")} simulations`, value: formatCompact(finalOutcome.p50) },
+      { label: "8 in 10 simulations ended", value: `${formatCompact(finalOutcome.p10)} to ${formatCompact(finalOutcome.p90)}` },
+    ],
+    plan: describePlan(inputs),
+    text: `${basis ? `If ${basis.name} keeps growing the way it has, ` : `At a steady ${inputs.returnPct}% a year, `}${describePlan(inputs, "sentence")} could grow to ${formatMoney(final.balance)} ${dollars} in ${years} year${years === 1 ? "" : "s"}, from ${formatMoney(final.contributed)} put in.`,
+  });
+
   return (
     <>
       <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
@@ -76,7 +106,10 @@ export function FutureResults({ inputs, real, onRealChange, basis }: Props) {
           <input
             type="checkbox"
             checked={real}
-            onChange={(e) => onRealChange(e.target.checked)}
+            onChange={(e) => {
+              tap();
+              onRealChange(e.target.checked);
+            }}
             className="h-4 w-4 accent-(--series-growth)"
           />
           Show in today&apos;s dollars
@@ -124,6 +157,9 @@ export function FutureResults({ inputs, real, onRealChange, basis }: Props) {
         <p className="mt-2 text-sm text-ink-2">
           {dollars}, from {formatMoney(final.contributed)} put in.
         </p>
+        <div className="mt-4">
+          <ShareReport report={report} />
+        </div>
       </Card>
 
       <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
@@ -238,7 +274,10 @@ export function FutureResults({ inputs, real, onRealChange, basis }: Props) {
           </div>
           <button
             type="button"
-            onClick={() => setSeed((current) => current + 1)}
+            onClick={() => {
+              tap();
+              setSeed((current) => current + 1);
+            }}
             className="rounded-md border border-hairline px-3 py-1.5 text-xs text-ink-2 hover:text-ink"
           >
             Run again

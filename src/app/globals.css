@@ -50,6 +50,40 @@ body {
   color: var(--ink);
 }
 
+/* Keeps content clear of the notch and home indicator when the iOS app
+   draws edge to edge; these are zero everywhere else. */
+body {
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom)
+    env(safe-area-inset-left);
+}
+
+/* A strip behind the status bar, so scrolled content doesn't run under it. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top);
+  background: var(--page);
+  z-index: 50;
+}
+
+/* In the iOS app, taps and long presses behave like a native app's rather
+   than a web page's. */
+.native {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+.native body {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.native input {
+  -webkit-user-select: auto;
+  user-select: auto;
+}
+
 input[type="range"] {
   accent-color: var(--series-growth);
 }

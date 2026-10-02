@@ -2,9 +2,11 @@
 
 import { useMemo } from "react";
 import { ChartFrame, bandPath, linePath } from "@/components/ChartFrame";
+import { ShareReport } from "@/components/ShareReport";
 import { CONTRIB, GROWTH, Card, Insights, Legend, StatTile } from "@/components/ui";
 import { formatChange, formatCompact, formatMoney, formatPercent } from "@/lib/format";
 import { backtest, formatMonth, type PriceHistory } from "@/lib/history";
+import { describePlan, type Report } from "@/lib/report";
 import type { Inputs } from "@/lib/simulate";
 
 // Points are monthly, so ticks land on whole years.
@@ -19,6 +21,28 @@ export function HistoryResults({ history, inputs }: { history: PriceHistory; inp
   const growth = final.balance - final.contributed;
   const span = `${result.years % 1 === 0 ? result.years : result.years.toFixed(1)} year${result.years === 1 ? "" : "s"}`;
   const yearlyRows = points.filter((_, i) => i % 12 === 0 || i === points.length - 1);
+
+  const report = (): Report => ({
+    subject: `${history.name} · what really happened`,
+    lead: `If I had started in ${formatMonth(start.date)} and kept going, today I’d have`,
+    headline: formatMoney(final.balance),
+    caption: `from ${formatMoney(final.contributed)} put into ${history.name} over ${span}.`,
+    chart: {
+      labels: points.map((p) => p.date.slice(0, 4)),
+      lines: [
+        { values: points.map((p) => p.balance), color: "growth", label: "Balance" },
+        { values: points.map((p) => p.contributed), color: "contrib", label: "What I put in" },
+      ],
+    },
+    stats: [
+      { label: "What I put in", value: formatCompact(final.contributed) },
+      { label: "Growth", value: formatCompact(growth) },
+      { label: "Yearly growth of the price", value: formatPercent(result.yearlyGrowth, 1) },
+      { label: "Biggest drop along the way", value: worstDrop ? `−${formatPercent(worstDrop.depth)}` : "None" },
+    ],
+    plan: describePlan(inputs),
+    text: `If I had put ${describePlan(inputs, "sentence")} into ${history.name} starting in ${formatMonth(start.date)}, I would have ${formatMoney(final.balance)} today, from ${formatMoney(final.contributed)} put in.`,
+  });
 
   return (
     <>
@@ -38,6 +62,9 @@ export function HistoryResults({ history, inputs }: { history: PriceHistory; inp
             {formatMonth(start.date)}.
           </p>
         )}
+        <div className="mt-4">
+          <ShareReport report={report} />
+        </div>
       </Card>
 
       <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
