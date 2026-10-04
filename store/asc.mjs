@@ -55,7 +55,15 @@ async function api(method, path, body) {
   if (response.status === 204) return null;
   const json = await response.json().catch(() => null);
   if (!response.ok) {
-    const details = json?.errors?.map((e) => `${e.title}: ${e.detail}`).join("\n  ") ?? response.statusText;
+    // Apple puts the real reasons (e.g. a missing App Privacy answer) in
+    // meta.associatedErrors.
+    const details =
+      json?.errors
+        ?.flatMap((e) => [
+          `${e.title}: ${e.detail}`,
+          ...Object.values(e.meta?.associatedErrors ?? {}).flat().map((a) => `  ${a.title} ${a.detail}`),
+        ])
+        .join("\n  ") ?? response.statusText;
     throw new Error(`${method} ${path} → ${response.status}\n  ${details}`);
   }
   return json;
@@ -343,11 +351,15 @@ const commands = {
 
   async submit() {
     const { app, version } = await context();
-    const submission = (
-      await api("POST", "/v1/reviewSubmissions", {
-        data: { type: "reviewSubmissions", attributes: { platform: "IOS" }, relationships: { app: ref("apps", app.id) } },
-      })
-    ).data;
+    // Reuse a draft left by an earlier attempt that Apple turned away.
+    const drafts = await api("GET", `/v1/reviewSubmissions?filter[app]=${app.id}&filter[platform]=IOS&filter[state]=READY_FOR_REVIEW`);
+    const submission =
+      drafts.data[0] ??
+      (
+        await api("POST", "/v1/reviewSubmissions", {
+          data: { type: "reviewSubmissions", attributes: { platform: "IOS" }, relationships: { app: ref("apps", app.id) } },
+        })
+      ).data;
     await api("POST", "/v1/reviewSubmissionItems", {
       data: {
         type: "reviewSubmissionItems",
