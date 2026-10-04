@@ -67,7 +67,7 @@ body::before {
   z-index: 50;
 }
 
-/* In the iOS app, taps and long presses behave like a native app's rather
+/* In the native apps, taps and long presses behave like a native app's rather
    than a web page's. */
 .native {
   -webkit-tap-highlight-color: transparent;

@@ -9,7 +9,7 @@ export type Lookup =
 
 /**
  * Validates a symbol and loads its price history. The web app calls this
- * from the API route; the iOS app, which has no server, calls it directly.
+ * from the API route; the iOS and Android apps, which have no server, call it directly.
  */
 export async function lookupHistory(raw: string): Promise<Lookup> {
   const symbol = raw.trim().toUpperCase();

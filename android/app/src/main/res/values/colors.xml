@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#2A78D6</color>
+    <color name="colorPrimaryDark">#1C5CAB</color>
+    <color name="colorAccent">#2A78D6</color>
+    <!-- The page background, so the window and system bars match the site. -->
+    <color name="page">#F9F9F7</color>
+</resources>

@@ -20,7 +20,7 @@ export function useHistory(symbol: string | null): HistoryState {
   useEffect(() => {
     if (!symbol) return;
     let cancelled = false;
-    // The iOS app has no server behind it, so it looks the symbol up itself.
+    // The native apps have no server behind them, so they look the symbol up themselves.
     const lookup = NATIVE
       ? lookupHistory(symbol).then(({ status, body }) => ({ ok: status === 200, body }))
       : fetch(`/api/history?symbol=${encodeURIComponent(symbol)}`).then(async (response) => ({

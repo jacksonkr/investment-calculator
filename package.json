@@ -5,11 +5,14 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build:ios": "NEXT_PUBLIC_NATIVE=1 next build && cap sync ios",
+    "build:native": "cross-env NEXT_PUBLIC_NATIVE=1 next build",
+    "build:ios": "npm run build:native && cap sync ios",
+    "build:android": "npm run build:native && cap sync android",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
+    "@capacitor/android": "^7.6.9",
     "@capacitor/core": "^7.6.9",
     "@capacitor/filesystem": "^7.1.8",
     "@capacitor/haptics": "^7.0.5",
@@ -26,6 +29,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cross-env": "^10.1.0",
     "eslint": "^9",
     "eslint-config-next": "16.3.7",
     "tailwindcss": "^4",

@@ -36,19 +36,43 @@ npm run dev
 - `src/components/ChartFrame.tsx` is the shared SVG chart frame (axes,
   crosshair, tooltip).
 
-## iOS app
+## iOS and Android apps
 
-The iOS app is this site wrapped with Capacitor (`ios/`).
+The apps are this site wrapped with Capacitor (`ios/` and `android/`).
 
 ```bash
-npm run build:ios   # static export, synced into the Xcode project
+npm run build:ios       # static export, synced into the Xcode project
+npm run build:android   # static export, synced into the Android project
 ```
 
-Then archive the "Invest Calc" scheme in Xcode (or with `xcodebuild`) and
-upload it to App Store Connect.
+In the apps there is no server, so `src/lib/lookup.ts` fetches price
+history directly (`NEXT_PUBLIC_NATIVE=1`, see `src/lib/native.ts`).
 
-- In the app there is no server, so `src/lib/lookup.ts` fetches price
-  history directly (`NEXT_PUBLIC_NATIVE=1`, see `src/lib/native.ts`).
+### iOS
+
+Archive the "Invest Calc" scheme in Xcode (or with `xcodebuild`) and upload
+it to App Store Connect.
+
 - `store/listing.json` holds the App Store listing text and screenshot
   list; `store/asc.mjs` pushes it through the App Store Connect API (run it
   with no arguments for usage).
+
+### Android
+
+Open `android/` in Android Studio, or build from the command line with the
+Android SDK installed and `JAVA_HOME` pointing at a JDK 17+ (Android
+Studio ships one in its `jbr` folder):
+
+```bash
+cd android
+./gradlew assembleDebug     # android/app/build/outputs/apk/debug/app-debug.apk
+./gradlew bundleRelease     # .aab for Google Play; needs a signing config first
+```
+
+Gradle finds the SDK through `ANDROID_HOME` or an `android/local.properties`
+file with `sdk.dir=...` (not committed).
+
+- The launcher icon and splash screens are generated from `assets/` (derived
+  from the iOS artwork) with `npx @capacitor/assets generate --android`.
+- `MainActivity` keeps the system bars matched to the page when the device
+  switches between light and dark mode.

@@ -12,8 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
-    // The native iOS project, which holds a copy of the built site.
+    // The native projects, which hold a copy of the built site.
     "ios/**",
+    "android/**",
   ]),
 ]);
 

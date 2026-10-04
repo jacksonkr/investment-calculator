@@ -502,7 +502,7 @@ function Workspace({ start }: { start: Scenario }) {
           >
             {justSaved ? "Saved" : "Save scenario"}
           </button>
-          {/* Inside the iOS app the page has no address anyone else could open. */}
+          {/* Inside the native apps the page has no address anyone else could open. */}
           {!NATIVE && (
             <button
               type="button"
