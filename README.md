@@ -35,3 +35,20 @@ npm run dev
   `FutureResults.tsx` and `HistoryResults.tsx` are the two result views.
 - `src/components/ChartFrame.tsx` is the shared SVG chart frame (axes,
   crosshair, tooltip).
+
+## iOS app
+
+The iOS app is this site wrapped with Capacitor (`ios/`).
+
+```bash
+npm run build:ios   # static export, synced into the Xcode project
+```
+
+Then archive the "Invest Calc" scheme in Xcode (or with `xcodebuild`) and
+upload it to App Store Connect.
+
+- In the app there is no server, so `src/lib/lookup.ts` fetches price
+  history directly (`NEXT_PUBLIC_NATIVE=1`, see `src/lib/native.ts`).
+- `store/listing.json` holds the App Store listing text and screenshot
+  list; `store/asc.mjs` pushes it through the App Store Connect API (run it
+  with no arguments for usage).

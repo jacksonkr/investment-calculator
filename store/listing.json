@@ -1,0 +1,34 @@
+{
+  "bundleId": "com.jacksonkr.InvestmentCalculator",
+  "locale": "en-US",
+  "name": "Invest-Calc",
+  "subtitle": "What if you had invested?",
+  "primaryCategory": "FINANCE",
+  "secondaryCategory": "EDUCATION",
+  "copyright": "2026 Jackson Rollins",
+  "privacyPolicyUrl": "https://gist.github.com/jacksonkr/325672610c5f64ad9cff352dbe7f9ec5",
+  "supportUrl": "https://gist.github.com/jacksonkr/0944b2399608e2676b59fbe1ed7eea7b",
+  "promotionalText": "See what a monthly habit would really have become in the S&P 500 or any stock, then run 1,000 possible futures to see the range of what could happen next.",
+  "keywords": "compound interest,backtest,dca,s&p 500,stock,retirement,savings,growth,monte carlo,index fund,etf",
+  "description": "What if you had started investing 10, 20 or 30 years ago? And what could the next 30 years look like? Invest Calc answers both, with real market history and honest ranges instead of a single rosy number.\n\nLOOK BACK AT WHAT REALLY HAPPENED\nPick the S&P 500, Dow Jones, Nasdaq or any stock or fund, enter a starting amount and a monthly contribution, and see your plan replayed against real month-by-month prices. You see the dips you would have had to sit through, the biggest drop along the way, and the best and worst years.\n\nSEE THE RANGE OF POSSIBLE FUTURES\nMarkets don't move in a straight line. Invest Calc runs 1,000 randomized futures based on an investment's past growth and ups and downs, and shows the middle outcome alongside a good run and a rough run, plus the chance of ending behind.\n\nOR USE YOUR OWN NUMBERS\nTry savings accounts, bonds, a balanced mix or a stock index with ballpark presets, or set your own return and volatility.\n\nTHE DETAILS THAT MATTER\n• Fees: see what a \"small\" yearly fee costs over decades\n• Inflation: switch everything to today's dollars\n• Raises: grow your monthly contribution each year\n• Touch the charts to see any point in time, or drag to compare a stretch\n• Year-by-year tables\n\nSHARE A REPORT\nSend friends a clean image of your results, with the chart and key numbers, straight from the share sheet.\n\nPRIVATE BY DESIGN\nNo account, no sign-in, no ads, no tracking. Your numbers and saved scenarios stay on your device. Only the index or ticker symbol you look up is sent, to fetch its price history.\n\nInvest Calc is for education only and is not financial advice. Every figure is hypothetical. Past performance does not predict future results, and real investments can lose value. Taxes are not included.",
+  "reviewNotes": "Invest Calc is an educational calculator with no accounts or sign-in, so no demo account is needed.\n\nTo try it: adjust the sliders under \"Your plan\"; choose \"Market index\" to replay the plan against real S&P 500 history (uncheck \"Historical\" to see simulated futures); choose \"Ticker\" and enter a symbol such as AAPL. \"Share this report\" opens the share sheet with an image of the results. \"Save scenario\" keeps a scenario on the device.\n\nThe app does not provide financial advice, trading or account linking.",
+  "screenshots": {
+    "APP_IPHONE_65": [
+      "screenshots/iphone-6.5-1.png",
+      "screenshots/iphone-6.5-2.png",
+      "screenshots/iphone-6.5-3.png",
+      "screenshots/iphone-6.5-4.png",
+      "screenshots/iphone-6.5-5.png"
+    ],
+    "APP_IPAD_PRO_3GEN_129": [
+      "screenshots/ipad-13-1.png",
+      "screenshots/ipad-13-2.png",
+      "screenshots/ipad-13-3.png"
+    ]
+  },
+  "review": {
+    "firstName": "Jackson",
+    "lastName": "Rollins",
+    "email": "rollins.jackson@gmail.com"
+  }
+}
