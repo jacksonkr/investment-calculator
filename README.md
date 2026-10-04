@@ -66,8 +66,14 @@ Studio ships one in its `jbr` folder):
 ```bash
 cd android
 ./gradlew assembleDebug     # android/app/build/outputs/apk/debug/app-debug.apk
-./gradlew bundleRelease     # .aab for Google Play; needs a signing config first
+./gradlew bundleRelease     # android/app/build/outputs/bundle/release/app-release.aab
 ```
+
+Release builds are signed with the upload key in `upload-keystore.jks`, using
+the details in `keystore.properties` (both at the repository root, neither
+committed). Keep a backup of both: Google Play only accepts updates signed
+with the same upload key. Raise `versionCode` in `android/app/build.gradle`
+for every upload.
 
 Gradle finds the SDK through `ANDROID_HOME` or an `android/local.properties`
 file with `sdk.dir=...` (not committed).

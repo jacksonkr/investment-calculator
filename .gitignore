@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Android signing: the upload keystore and its passwords
+*.jks
+*.keystore
+keystore.properties
