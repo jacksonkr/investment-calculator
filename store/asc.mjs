@@ -84,7 +84,7 @@ async function context() {
 
   const versions = await api("GET", `/v1/apps/${app.id}/appStoreVersions?filter[platform]=IOS`);
   const version = versions.data.find((v) =>
-    ["PREPARE_FOR_SUBMISSION", "DEVELOPER_REJECTED", "REJECTED", "METADATA_REJECTED"].includes(
+    ["PREPARE_FOR_SUBMISSION", "READY_FOR_REVIEW", "DEVELOPER_REJECTED", "REJECTED", "METADATA_REJECTED"].includes(
       v.attributes.appStoreState,
     ),
   );
@@ -360,15 +360,20 @@ const commands = {
           data: { type: "reviewSubmissions", attributes: { platform: "IOS" }, relationships: { app: ref("apps", app.id) } },
         })
       ).data;
-    await api("POST", "/v1/reviewSubmissionItems", {
-      data: {
-        type: "reviewSubmissionItems",
-        relationships: {
-          reviewSubmission: ref("reviewSubmissions", submission.id),
-          appStoreVersion: ref("appStoreVersions", version.id),
+    // "Add for Review" on the website puts the version in the draft already.
+    const items = await api("GET", `/v1/reviewSubmissions/${submission.id}/items?include=appStoreVersion`);
+    const included = items.data.some((item) => item.relationships?.appStoreVersion?.data?.id === version.id);
+    if (!included) {
+      await api("POST", "/v1/reviewSubmissionItems", {
+        data: {
+          type: "reviewSubmissionItems",
+          relationships: {
+            reviewSubmission: ref("reviewSubmissions", submission.id),
+            appStoreVersion: ref("appStoreVersions", version.id),
+          },
         },
-      },
-    });
+      });
+    }
     await api("PATCH", `/v1/reviewSubmissions/${submission.id}`, {
       data: { type: "reviewSubmissions", id: submission.id, attributes: { submitted: true } },
     });
