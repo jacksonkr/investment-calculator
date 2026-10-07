@@ -1,6 +1,8 @@
 import type { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
+  // The iOS bundle ID. Android uses the lowercase form, set in
+  // android/app/build.gradle, because Google Play registered it that way.
   appId: "com.jacksonkr.InvestmentCalculator",
   appName: "Invest Calc",
   webDir: "out",

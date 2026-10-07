@@ -1,0 +1,32 @@
+{
+  "packageName": "com.jacksonkr.investmentcalculator",
+  "locale": "en-US",
+  "name": "Invest Calc",
+  "shortDescription": "What if you had invested? Replay real market history, then explore the future.",
+  "fullDescription": "What if you had started investing 10, 20 or 30 years ago? And what could the next 30 years look like? Invest Calc answers both, with real market history and honest ranges instead of a single rosy number.\n\nLOOK BACK AT WHAT REALLY HAPPENED\nPick the S&P 500, Dow Jones, Nasdaq or any stock or fund, enter a starting amount and a monthly contribution, and see your plan replayed against real month-by-month prices. You see the dips you would have had to sit through, the biggest drop along the way, and the best and worst years.\n\nSEE THE RANGE OF POSSIBLE FUTURES\nMarkets don't move in a straight line. Invest Calc runs 1,000 randomized futures based on an investment's past growth and ups and downs, and shows the middle outcome alongside a good run and a rough run, plus the chance of ending behind.\n\nOR USE YOUR OWN NUMBERS\nTry savings accounts, bonds, a balanced mix or a stock index with ballpark presets, or set your own return and volatility.\n\nTHE DETAILS THAT MATTER\n• Fees: see what a \"small\" yearly fee costs over decades\n• Inflation: switch everything to today's dollars\n• Raises: grow your monthly contribution each year\n• Touch the charts to see any point in time, or drag to compare a stretch\n• Year-by-year tables\n\nSHARE A REPORT\nSend friends a clean image of your results, with the chart and key numbers, to any app on your phone.\n\nPRIVATE BY DESIGN\nNo account, no sign-in, no ads, no tracking. Your numbers and saved scenarios stay on your device. Only the index or ticker symbol you look up is sent, to fetch its price history.\n\nInvest Calc is for education only and is not financial advice. Every figure is hypothetical. Past performance does not predict future results, and real investments can lose value. Taxes are not included.",
+  "category": "Finance",
+  "tags": [
+    "Investment",
+    "Personal finance",
+    "Calculator",
+    "Education",
+    "Mathematics"
+  ],
+  "financialFeatures": "none",
+  "contact": {
+    "email": "rollins.jackson@gmail.com",
+    "website": "https://github.com/jacksonkr/investment-calculator"
+  },
+  "privacyPolicyUrl": "https://gist.github.com/jacksonkr/325672610c5f64ad9cff352dbe7f9ec5",
+  "graphics": {
+    "icon": "play/icon-512.png",
+    "featureGraphic": "play/feature-graphic-1024x500.png",
+    "phoneScreenshots": [
+      "play/phone-1.png",
+      "play/phone-2.png",
+      "play/phone-3.png",
+      "play/phone-4.png",
+      "play/phone-5.png"
+    ]
+  }
+}

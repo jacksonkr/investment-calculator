@@ -2,6 +2,6 @@
 <resources>
     <string name="app_name">Invest Calc</string>
     <string name="title_activity_main">Invest Calc</string>
-    <string name="package_name">com.jacksonkr.InvestmentCalculator</string>
-    <string name="custom_url_scheme">com.jacksonkr.InvestmentCalculator</string>
+    <string name="package_name">com.jacksonkr.investmentcalculator</string>
+    <string name="custom_url_scheme">com.jacksonkr.investmentcalculator</string>
 </resources>
